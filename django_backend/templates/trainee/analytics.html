@@ -1,0 +1,158 @@
+{% extends "base.html" %}
+
+{% block title %}NextHire Analytics | Candidate Metrics & placement Readiness{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in text-left">
+    <!-- Header title -->
+    <div class="space-y-1.5 border-b border-slate-900 pb-4">
+        <h1 class="text-xl sm:text-2xl font-black font-display text-white flex items-center gap-2">
+            Predictive Analytics & Scores
+        </h1>
+        <p class="text-xs text-slate-400">Track academic progress profiles, review placement readiness metrics, and audit submission pipelines balances.</p>
+    </div>
+
+    <!-- Phase 5: Metrics Bento Cards Grid -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <!-- Profile Completion Score -->
+        <div class="bg-indigo-950/10 border border-indigo-900/40 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-indigo-400">Profile Completion</span>
+                <span class="text-lg"></span>
+            </div>
+            <div class="space-y-1">
+                <div class="text-3xl font-black font-display text-white">{{ profile_completion }}%</div>
+                <p class="text-[10px] text-slate-500 leading-normal">Percentage of filled metadata variables</p>
+            </div>
+            <div class="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-indigo-500 h-full" style="width: {{ profile_completion }}%"></div>
+            </div>
+        </div>
+
+        <!-- Placement Readiness -->
+        <div class="bg-emerald-950/10 border border-emerald-900/40 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-emerald-400">Readiness Score</span>
+                <span class="text-lg"></span>
+            </div>
+            <div class="space-y-1">
+                <div class="text-3xl font-black font-display text-white">{{ readiness }}/100</div>
+                <p class="text-[10px] text-slate-500 leading-normal">Dynamic corporate suitability index</p>
+            </div>
+            <div class="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-emerald-500 h-full" style="width: {{ readiness }}%"></div>
+            </div>
+        </div>
+
+        <!-- Applications Total -->
+        <div class="bg-cyan-950/10 border border-cyan-900/40 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-cyan-400">Total Submissions</span>
+                <span class="text-lg"></span>
+            </div>
+            <div class="space-y-1">
+                <div class="text-3xl font-black font-display text-white">{{ total_apps }}</div>
+                <p class="text-[10px] text-slate-500 leading-normal">Active pipeline records</p>
+            </div>
+            <div class="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-cyan-500 h-full" style="width: {% widthratio total_apps 10 100 %}%"></div>
+            </div>
+        </div>
+
+        <!-- CGPA Gap metric -->
+        <div class="bg-amber-950/10 border border-amber-900/40 rounded-2xl p-5 space-y-4">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-bold uppercase tracking-wider text-amber-500">CGPA Headroom</span>
+                <span class="text-lg"></span>
+            </div>
+            <div class="space-y-1">
+                <div class="text-3xl font-black font-display text-white">{{ trainee.cgpa }}/10.0</div>
+                <p class="text-[10px] text-slate-500 leading-normal">Headroom Gap remaining: -{{ gpa_gap }}</p>
+            </div>
+            <div class="w-full bg-slate-950 h-1.5 rounded-full overflow-hidden">
+                <div class="bg-amber-500 h-full" style="width: {% widthratio trainee.cgpa 10 100 %}%"></div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Advanced Charts Rows -->
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        
+        <!-- Left: Interview Performance Progress Flow (SVG render) -->
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-6 space-y-6">
+            <div>
+                <h3 class="text-sm font-black font-display text-white">Interview Performance Trend</h3>
+                <p class="text-[10px] text-slate-500">Rating scores mapped across corporate interviews</p>
+            </div>
+
+            <!-- SVG Line Chart Mockup -->
+            <div class="relative h-48 w-full border border-slate-900/60 bg-slate-950/40 rounded-2xl p-4 flex flex-col justify-between">
+                <!-- SVG plot lines -->
+                <svg class="absolute inset-x-0 bottom-4 w-full h-[120px]" viewBox="0 0 400 100" preserveAspectRatio="none">
+                    <!-- Grid Lines -->
+                    <line x1="0" y1="20" x2="400" y2="20" stroke="#1e293b" stroke-dasharray="4" stroke-width="1"/>
+                    <line x1="0" y1="50" x2="400" y2="50" stroke="#1e293b" stroke-dasharray="4" stroke-width="1"/>
+                    <line x1="0" y1="80" x2="400" y2="80" stroke="#1e293b" stroke-dasharray="4" stroke-width="1"/>
+                    
+                    <!-- Line path -->
+                    <path d="{{ path_d }}" fill="none" stroke="#6366f1" stroke-width="3" stroke-linecap="round"/>
+                    
+                    <!-- Nodes -->
+                    {% for item in interview_trend %}
+                    <circle cx="{{ item.x }}" cy="{{ item.y }}" r="4" fill="#6366f1" stroke="#020617" stroke-width="2"/>
+                    {% endfor %}
+                </svg>
+
+                <!-- Sem tags list -->
+                <div class="mt-auto flex justify-between text-[9px] font-mono text-slate-500 px-1 pt-2 border-t border-slate-900/40">
+                    {% for item in interview_trend %}
+                        <div class="text-center">
+                            <span class="block font-bold text-slate-400">{{ item.label }}</span>
+                            <span class="text-indigo-400">{{ item.score }}/5</span>
+                        </div>
+                    {% endfor %}
+                </div>
+            </div>
+        </div>
+
+        <!-- Right Column: Submission Pipeline statuses (Pie Chart) -->
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-6 space-y-6">
+            <div>
+                <h3 class="text-sm font-black font-display text-white">Submission Status Balances</h3>
+                <p class="text-[10px] text-slate-500">Submissions mapped across current evaluation steps</p>
+            </div>
+
+            <div class="flex items-center gap-6 mt-4">
+                <!-- Pie Chart -->
+                <div class="w-32 h-32 rounded-full shrink-0" style="background: {{ conic_gradient }};"></div>
+                
+                <!-- Legend -->
+                <div class="space-y-2.5 flex-1">
+                    <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400">
+                        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full bg-blue-500"></div> Under Review</div>
+                        <span class="font-mono text-slate-300 font-bold bg-slate-900/60 px-1.5 py-0.5 rounded">{{ app_status_counts.PENDING }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400">
+                        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full bg-cyan-500"></div> Shortlisted</div>
+                        <span class="font-mono text-slate-300 font-bold bg-slate-900/60 px-1.5 py-0.5 rounded">{{ app_status_counts.SHORTLISTED }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400">
+                        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full bg-amber-500"></div> Interviews</div>
+                        <span class="font-mono text-slate-300 font-bold bg-slate-900/60 px-1.5 py-0.5 rounded">{{ app_status_counts.INTERVIEWING }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400">
+                        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full bg-emerald-500"></div> Offers</div>
+                        <span class="font-mono text-slate-300 font-bold bg-slate-900/60 px-1.5 py-0.5 rounded">{{ app_status_counts.OFFERED }}</span>
+                    </div>
+                    <div class="flex items-center justify-between text-[11px] font-semibold text-slate-400">
+                        <div class="flex items-center gap-2"><div class="w-2.5 h-2.5 rounded-full bg-red-500"></div> Rejected</div>
+                        <span class="font-mono text-slate-300 font-bold bg-slate-900/60 px-1.5 py-0.5 rounded">{{ app_status_counts.REJECTED }}</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+</div>
+{% endblock %}

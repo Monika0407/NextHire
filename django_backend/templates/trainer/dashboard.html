@@ -1,0 +1,123 @@
+{% extends "base.html" %}
+
+{% block title %}Trainer Dashboard | NextHire{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+    <!-- Header Greeting -->
+    <div class="relative overflow-hidden glass-panel p-8 sm:p-10 rounded-[2rem] shadow-sm">
+        <div class="relative z-10 flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+            <div class="space-y-2">
+                <span class="inline-block px-3 py-1 rounded-full bg-indigo-500/10 border border-indigo-500/20 text-[10px] font-mono font-bold uppercase tracking-widest text-indigo-600 dark:text-indigo-400 mb-2">Training Institute & Placement Layer</span>
+                <h1 class="text-3xl sm:text-4xl font-black font-display tracking-tight text-slate-900 dark:text-white pb-2">
+                    Trainer Console
+                </h1>
+                <p class="text-sm text-slate-600 dark:text-slate-400 max-w-2xl">Manage trainee placement accreditation, verify eligibility profiles, and recommend candidates to corporate partners.</p>
+                <div class="pt-6">
+                    <a href="{% url 'trainer:analytics' %}" class="inline-flex items-center gap-2 rounded-xl bg-indigo-600 hover:bg-indigo-500 px-6 py-3 text-sm font-bold text-white shadow-sm transition-all duration-200">
+                        View Trainer Analytics
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Metrics Bento Grid -->
+    <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 sm:gap-6">
+        <!-- Total Trainees -->
+        <a href="{% url 'trainer:trainees' %}" class="glass-panel rounded-[1.5rem] p-5 sm:p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg group block animate-fade-in" style="animation-delay: 50ms; animation-fill-mode: both;">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Total Trainees</span>
+                <span class="text-[10px] font-mono font-bold text-indigo-600 dark:text-indigo-400 bg-indigo-500/10 px-2 py-0.5 rounded-full border border-indigo-500/20">Registries</span>
+            </div>
+            <p class="text-3xl sm:text-4xl font-black font-display text-slate-900 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 mt-4 transition-colors">{{ total_students }}</p>
+            <p class="text-[10px] text-slate-500 mt-2">Total registered trainees</p>
+        </a>
+
+        <!-- Approved Trainees -->
+        <a href="{% url 'trainer:trainees' %}?status=approved" class="glass-panel rounded-[1.5rem] p-5 sm:p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg group block animate-fade-in" style="animation-delay: 100ms; animation-fill-mode: both;">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Accredited</span>
+                <span class="text-[10px] font-mono font-bold text-emerald-600 dark:text-emerald-400 bg-emerald-500/10 px-2 py-0.5 rounded-full border border-emerald-500/20">Approved</span>
+            </div>
+            <p class="text-3xl sm:text-4xl font-black font-display text-slate-900 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 mt-4 transition-colors">{{ approved_students }}</p>
+            <p class="text-[10px] text-slate-500 mt-2">Eligible for placements</p>
+        </a>
+
+        <!-- Pending Trainees -->
+        <a href="{% url 'trainer:trainees' %}?status=pending" class="glass-panel rounded-[1.5rem] p-5 sm:p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg group block animate-fade-in" style="animation-delay: 150ms; animation-fill-mode: both;">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest group-hover:text-amber-600 dark:group-hover:text-amber-400 transition-colors">Pending</span>
+                <span class="text-[10px] font-mono font-bold text-amber-600 dark:text-amber-400 bg-amber-500/10 px-2 py-0.5 rounded-full border border-amber-500/20">Awaiting</span>
+            </div>
+            <p class="text-3xl sm:text-4xl font-black font-display text-slate-900 dark:text-white group-hover:text-amber-600 dark:group-hover:text-amber-400 mt-4 transition-colors">{{ pending_students }}</p>
+            <p class="text-[10px] text-slate-500 mt-2">Requires profile audit</p>
+        </a>
+
+        <!-- Total Applications -->
+        <a href="{% url 'trainer:trainees' %}" class="glass-panel rounded-[1.5rem] p-5 sm:p-6 transition-all duration-200 hover:-translate-y-0.5 hover:shadow-lg group block animate-fade-in" style="animation-delay: 200ms; animation-fill-mode: both;">
+            <div class="flex items-center justify-between">
+                <span class="text-[10px] font-mono font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest group-hover:text-cyan-600 dark:group-hover:text-cyan-400 transition-colors">Submissions</span>
+                <span class="text-[10px] font-mono font-bold text-cyan-600 dark:text-cyan-400 bg-cyan-500/10 px-2 py-0.5 rounded-full border border-cyan-500/20">Applications</span>
+            </div>
+            <p class="text-3xl sm:text-4xl font-black font-display text-slate-900 dark:text-white group-hover:text-cyan-600 dark:group-hover:text-cyan-400 mt-4 transition-colors">{{ total_applications }}</p>
+            <p class="text-[10px] text-slate-500 mt-2">Filed application registers</p>
+        </a>
+    </div>
+
+    <!-- Handled Courses Management -->
+    <div class="glass-panel rounded-2xl p-6 lg:p-8 shadow-sm">
+        <h2 class="text-sm font-black font-display text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+            <span class="w-1.5 h-4 bg-indigo-500 rounded"></span> Handled Course Domains
+        </h2>
+        <p class="text-xs text-slate-600 dark:text-slate-400 mb-6">Select the course domains you are responsible for. This controls candidate filtering and job match recommendations in your workspace.</p>
+        <form method="post" action="{% url 'trainer:update_courses' %}" class="space-y-6">
+            {% csrf_token %}
+            <div class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-3 bg-slate-50 dark:bg-slate-900/50 p-5 rounded-xl border border-slate-200 dark:border-slate-800">
+                {% for course in courses %}
+                    <label class="flex items-center gap-2 text-xs text-slate-800 dark:text-slate-300 cursor-pointer select-none hover:text-indigo-600 dark:hover:text-indigo-400 transition-colors">
+                        <input 
+                            type="checkbox" 
+                            name="courses" 
+                            value="{{ course.id }}"
+                            class="form-checkbox rounded bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-700 text-indigo-500 focus:ring-0 focus:ring-offset-0 transition-all"
+                            {% if course.id in handled_course_ids %}checked{% endif %}
+                        >
+                        <span class="font-medium">{{ course.name }}</span>
+                    </label>
+                {% endfor %}
+            </div>
+            <div class="flex justify-end">
+                <button type="submit" class="px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white text-xs font-bold rounded-xl transition-all shadow-sm">
+                    Save Handled Domains
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Quick Navigation Hub -->
+    <div class="glass-panel rounded-2xl p-6 lg:p-8 shadow-sm">
+        <h2 class="text-sm font-black font-display text-slate-900 dark:text-white mb-6 flex items-center gap-2">
+            <span class="w-1.5 h-4 bg-indigo-500 rounded"></span> Trainer Action Center
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+            <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-xl flex flex-col justify-between group hover:-translate-y-1 hover:shadow-md transition-all">
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-white group-hover:text-indigo-600 dark:group-hover:text-indigo-400 transition-colors">Student Verification Bench</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Review academic credentials, CGPA records, listed skillsets, and verify trainee profiles for placement accreditation.</p>
+                </div>
+                <a href="{% url 'trainer:trainees' %}" class="mt-5 inline-flex items-center gap-1 text-xs font-bold text-indigo-600 dark:text-indigo-400 group-hover:gap-2 transition-all">Go to Verification Bench &rarr;</a>
+            </div>
+
+            <div class="bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 p-6 rounded-xl flex flex-col justify-between group hover:-translate-y-1 hover:shadow-md transition-all">
+                <div class="space-y-3">
+                    <h3 class="text-sm font-bold text-slate-800 dark:text-white group-hover:text-emerald-600 dark:group-hover:text-emerald-400 transition-colors">Placement Recommendations</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 leading-relaxed">Match top-performing accredited candidates to active job openings and send recommendations directly to recruiters.</p>
+                </div>
+                <a href="{% url 'trainer:trainees' %}?status=approved" class="mt-5 inline-flex items-center gap-1 text-xs font-bold text-emerald-600 dark:text-emerald-400 group-hover:gap-2 transition-all">Recommend Approved Trainees &rarr;</a>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,6 @@
+{
+  "name": "NextHire – Smart Placement & Recruitment Platform",
+  "description": "Modern SaaS-like AI Smart Placement management platform for students, recruiters, and admins.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

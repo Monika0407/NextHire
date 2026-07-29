@@ -1,0 +1,94 @@
+{% extends "base.html" %}
+
+{% block title %}Placement Officer Analytics | NextHire{% endblock %}
+
+{% block content %}
+<div class="space-y-8 animate-fade-in">
+    <div class="bg-slate-900/40 border border-slate-900 rounded-3xl p-6">
+        <div class="space-y-1.5">
+            <span class="text-xs font-mono font-bold uppercase tracking-wider text-indigo-400">Placement Analytics</span>
+            <h1 class="text-3xl font-black text-white">Placement Officer Intelligence</h1>
+            <p class="text-sm text-slate-400">Monitor placement readiness, trainee approvals, active jobs, and course-based candidate distribution.</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
+        <div class="bg-slate-900/20 border border-slate-900 rounded-3xl p-6">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.24em]">Total Trainees</p>
+            <p class="mt-3 text-4xl font-black text-white">{{ total_students }}</p>
+            <p class="text-xs text-slate-500 mt-2">Learners managed by placement workflow</p>
+        </div>
+        <div class="bg-slate-900/20 border border-slate-900 rounded-3xl p-6">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.24em]">Approved Profiles</p>
+            <p class="mt-3 text-4xl font-black text-white">{{ approved_students }}</p>
+            <p class="text-xs text-slate-500 mt-2">Eligible students for placement matching</p>
+        </div>
+        <div class="bg-slate-900/20 border border-slate-900 rounded-3xl p-6">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.24em]">Pending Review</p>
+            <p class="mt-3 text-4xl font-black text-white">{{ pending_students }}</p>
+            <p class="text-xs text-slate-500 mt-2">Profiles pending placement approval</p>
+        </div>
+        <div class="bg-slate-900/20 border border-slate-900 rounded-3xl p-6">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.24em]">Open Jobs</p>
+            <p class="mt-3 text-4xl font-black text-white">{{ active_jobs }}</p>
+            <p class="text-xs text-slate-500 mt-2">Recruiter job postings available to trainees</p>
+        </div>
+        <div class="bg-slate-900/20 border border-slate-900 rounded-3xl p-6">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.24em]">Placed Students</p>
+            <p class="mt-3 text-4xl font-black text-white">{{ placed_students }}</p>
+            <p class="text-xs text-slate-500 mt-2">Students marked as placed in the system</p>
+        </div>
+        <div class="bg-slate-900/20 border border-slate-900 rounded-3xl p-6">
+            <p class="text-sm text-slate-400 uppercase tracking-[0.24em]">Recruiters Active</p>
+            <p class="mt-3 text-4xl font-black text-white">{{ recruiter_count }}</p>
+            <p class="text-xs text-slate-500 mt-2">Recruiters available for candidate outreach</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-2 gap-5">
+        <div class="bg-slate-900/20 border border-slate-900 rounded-3xl p-6">
+            <h2 class="text-xl font-black text-white mb-4">Top Course Enrollments</h2>
+            <div class="space-y-3">
+                {% for course in course_breakdowns %}
+                    <div class="flex items-center justify-between bg-slate-950/60 p-3 rounded-2xl border border-slate-800">
+                        <span class="text-sm text-slate-200">{{ course.name }}</span>
+                        <span class="text-sm font-semibold text-indigo-400">{{ course.student_count }}</span>
+                    </div>
+                {% empty %}
+                    <p class="text-xs text-slate-500">No course data available yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+
+        <div class="bg-slate-900/20 border border-slate-900 rounded-3xl p-6">
+            <h2 class="text-xl font-black text-white mb-4">Batch Distribution</h2>
+            <div class="space-y-3">
+                {% for batch in batch_breakdowns %}
+                    <div class="flex items-center justify-between bg-slate-950/60 p-3 rounded-2xl border border-slate-800">
+                        <span class="text-sm text-slate-200">{{ batch.batch_code|default:'Unknown batch' }}</span>
+                        <span class="text-sm font-semibold text-cyan-400">{{ batch.batch_size }}</span>
+                    </div>
+                {% empty %}
+                    <p class="text-xs text-slate-500">No batch distribution data available yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="bg-slate-900/20 border border-slate-900 rounded-3xl p-6">
+        <h2 class="text-xl font-black text-white mb-4">Operational Signals</h2>
+        <div class="grid gap-4 sm:grid-cols-2">
+            <div class="bg-slate-950/60 rounded-2xl p-4 border border-slate-800">
+                <p class="text-sm text-slate-400 uppercase tracking-[0.24em]">Pending Course Requests</p>
+                <p class="mt-3 text-3xl font-black text-white">{{ pending_course_requests }}</p>
+                <p class="text-xs text-slate-500 mt-2">Student course edit requests pending trainer review</p>
+            </div>
+            <div class="bg-slate-950/60 rounded-2xl p-4 border border-slate-800">
+                <p class="text-sm text-slate-400 uppercase tracking-[0.24em]">Placement Recommendations</p>
+                <p class="mt-3 text-3xl font-black text-white">{{ placement_recommendations }}</p>
+                <p class="text-xs text-slate-500 mt-2">Candidate recommendations issued by trainers</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

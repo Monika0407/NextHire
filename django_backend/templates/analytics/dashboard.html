@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Placement Analytics | NextHire{% endblock %}
+
+{% block content %}
+<div class="space-y-8 px-4 py-8 max-w-7xl mx-auto">
+    <div class="bg-slate-900/40 border border-slate-900 rounded-3xl p-6">
+        <h1 class="text-3xl font-black text-white">Placement Analytics Dashboard</h1>
+        <p class="mt-2 text-sm text-slate-400">Live placement insights by batch, branch, company, and candidate readiness.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-5">
+            <p class="text-xs uppercase text-slate-500 tracking-wider">Candidates</p>
+            <p class="mt-3 text-3xl font-black text-white">{{ metrics.total_candidates }}</p>
+            <p class="mt-2 text-slate-400 text-sm">Total registered trainees</p>
+        </div>
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-5">
+            <p class="text-xs uppercase text-slate-500 tracking-wider">Placement Rate</p>
+            <p class="mt-3 text-3xl font-black text-white">{{ metrics.placement_ratio }}%</p>
+            <p class="mt-2 text-slate-400 text-sm">Overall placements vs registered trainees</p>
+        </div>
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-5">
+            <p class="text-xs uppercase text-slate-500 tracking-wider">Average CGPA</p>
+            <p class="mt-3 text-3xl font-black text-white">{{ metrics.global_gpa_average }}</p>
+            <p class="mt-2 text-slate-400 text-sm">Mean CGPA for candidate pool</p>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 xl:grid-cols-3 gap-4">
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-6">
+            <h2 class="text-lg font-bold text-white">Placements by Branch</h2>
+            <div class="mt-4 space-y-3 text-sm text-slate-300">
+                {% for item in branch_placements %}
+                    <div class="flex items-center justify-between gap-4">
+                        <span>{{ item.branch|default:'Unknown' }}</span>
+                        <span class="font-semibold text-indigo-300">{{ item.count }}</span>
+                    </div>
+                {% empty %}
+                    <p class="text-slate-500">No placements recorded yet.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-6">
+            <h2 class="text-lg font-bold text-white">Placements by Batch</h2>
+            <div class="mt-4 space-y-3 text-sm text-slate-300">
+                {% for item in batch_placements %}
+                    <div class="flex items-center justify-between gap-4">
+                        <span>{{ item.batch_code|default:'Unknown' }}</span>
+                        <span class="font-semibold text-indigo-300">{{ item.count }}</span>
+                    </div>
+                {% empty %}
+                    <p class="text-slate-500">No batch placement data available.</p>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-6">
+            <h2 class="text-lg font-bold text-white">Top Hiring Companies</h2>
+            <div class="mt-4 space-y-3 text-sm text-slate-300">
+                {% for item in top_companies %}
+                    <div class="flex items-center justify-between gap-4">
+                        <span>{{ item.company_name|default:'Unknown' }}</span>
+                        <span class="font-semibold text-indigo-300">{{ item.count }}</span>
+                    </div>
+                {% empty %}
+                    <p class="text-slate-500">No hiring company data available.</p>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-4">
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-6">
+            <h2 class="text-lg font-bold text-white">Current Active Metrics</h2>
+            <div class="mt-4 text-sm text-slate-300 space-y-3">
+                <p>Total partners: <span class="font-semibold text-white">{{ metrics.total_partners }}</span></p>
+                <p>Open vacancies: <span class="font-semibold text-white">{{ metrics.active_openings }}</span></p>
+                <p>Total applications: <span class="font-semibold text-white">{{ metrics.total_submissions }}</span></p>
+                <p>Successful placements: <span class="font-semibold text-white">{{ metrics.placed_count }}</span></p>
+            </div>
+        </div>
+        <div class="bg-slate-900/10 border border-slate-900 rounded-3xl p-6">
+            <h2 class="text-lg font-bold text-white">Report Actions</h2>
+            <div class="mt-6 space-y-3">
+                <a href="{% url 'reports:placed_export' %}" class="inline-block w-full text-center rounded-2xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white hover:bg-indigo-400 transition">Export Placed Students CSV</a>
+                <p class="text-slate-400 text-xs">Download the latest placement audit spreadsheet for reporting and compliance.</p>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
